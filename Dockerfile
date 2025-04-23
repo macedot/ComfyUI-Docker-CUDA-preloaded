@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-dejavu-core \
     fonts-liberation \
     fontconfig \
+    ffmpeg \
     && fc-cache -f -v \
     && rm -rf /var/lib/apt/lists/*
 
@@ -56,6 +57,9 @@ RUN pip install --no-cache-dir \
 RUN git clone https://github.com/comfyanonymous/ComfyUI ${COMFYUI_DIR}
 WORKDIR ${COMFYUI_DIR}
 
+# git checkout to last known stable tag
+RUN git fetch --tags && git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+
 # Install requirements
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir \
@@ -64,8 +68,10 @@ RUN pip install --no-cache-dir -r requirements.txt && \
     scikit-image \
     imageio \
     pillow \
-    hf-transfer huggingface-hub \
-    insightface \
+    hf-transfer \
+    triton \
+    streamdiffusion \
+    huggingface_hub \
     facexlib \
     git+https://github.com/rodjjo/filterpy.git \
     onnxruntime onnxruntime-gpu \

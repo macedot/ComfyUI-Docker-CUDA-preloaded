@@ -56,6 +56,23 @@ I have included a few working example at [workflows](workflows) including a text
 
 Please colaborate adding more good workflow like those.
 
+## NOTE 
+
+I included my own fork of ComfyUI-IDM-VTON (clothing replacement tool) because it breaks with newer diffusion package. I have to revert back to the original repo once it upgrades the project.
+Original: https://github.com/TemryL/ComfyUI-IDM-VTON
+
 ## Common Errors
 
 If you see a dialog box in ComfyUI complaining about "Header too Small", pay attention which Node and file. Then browse to the path, like "models/lora/flu1-canny-dev-lora.safetensors", let's say. It's probably 0 bytes because the download failed. Check the URL in models.conf and re-download to see if the URL is 404 Not Found.
+
+Every time you `git pull` and you see a change in the Dockerfile, you need to do the following:
+
+```
+docker compose down 
+docker volume rm comfyui_venv
+rm -Rf custom_nodes/.last_commits
+docker compose build
+docker compose up
+```
+
+The venv volume might not have libraries added only in the build, so you need to nuke it. then erase last_commits so the init_extensions download all extension dependencies again.
